@@ -54,6 +54,7 @@ export default function EnergySimulator() {
   })
 
   const [showTooltip, setShowTooltip] = useState(false)
+  const [showPvTooltip, setShowPvTooltip] = useState(false)
 
   const sidebarItems = [
     { icon: TrendingUp, label: "Progress", active: false },
@@ -170,7 +171,10 @@ export default function EnergySimulator() {
                 <SelectItem value="Learn">Learn</SelectItem>
               </SelectContent>
             </Select>
-     
+            <div className="flex">
+              <ChevronDown className="h-4 w-4 text-gray-500 -mr-1" />
+              <ChevronDown className="h-4 w-4 text-gray-500" />
+            </div>
           </div>
         </div>
 
@@ -335,15 +339,15 @@ export default function EnergySimulator() {
                             variant="ghost"
                             size="sm"
                             className="h-4 w-4 p-0"
-                            onMouseEnter={() => setShowTooltip(true)}
-                            onMouseLeave={() => setShowTooltip(false)}
+                            onMouseEnter={() => setShowPvTooltip(true)}
+                            onMouseLeave={() => setShowPvTooltip(false)}
                           >
                             <Info className="h-3 w-3 text-gray-400" />
                           </Button>
-                          {showTooltip && (
-                            <div className="absolute left-6 top-0 z-10 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg">
-                              If you dont know your solar capacity, would you know how many % of your roof is covered
-                              with it? Typically, 1 panel of 400 Wp is 1.8 square meter
+                          {showPvTooltip && (
+                            <div className="absolute left-6 top-0 z-10 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-lg">
+                              If you don't know your solar capacity, would you know how many % of your roof is covered
+                              with it? Typically, 1 panel of 400 Wp is 1.8 square meters.
                             </div>
                           )}
                         </div>
