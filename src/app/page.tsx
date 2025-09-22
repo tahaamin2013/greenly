@@ -342,7 +342,7 @@ export default function EnergySimulator() {
                           </Button>
                           {showTooltip && (
                             <div className="absolute left-6 top-0 z-10 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg">
-                              If you don't know your solar capacity, would you know how many % of your roof is covered
+                              If you dont know your solar capacity, would you know how many % of your roof is covered
                               with it? Typically, 1 panel of 400 Wp is 1.8 square meter
                             </div>
                           )}
