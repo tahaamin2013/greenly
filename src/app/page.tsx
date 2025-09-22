@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   ChevronDown,
   Calendar,
@@ -25,14 +24,37 @@ import {
   User,
   Menu,
   X,
+  Info,
+  WeightIcon as LightIcon,
+  Circle,
+  Star,
 } from "lucide-react"
 
 export default function EnergySimulator() {
   const [selectedCompany, setSelectedCompany] = useState("ACME Inc.")
   const [selectedYear, setSelectedYear] = useState("2025")
   const [selectedReportYear, setSelectedReportYear] = useState("2024")
-  const [scenario, setScenario] = useState("core")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  const [formData, setFormData] = useState({
+    numberOfBuildings: "1",
+    averageSuperficy: "200",
+    yourBuilding: "Offices",
+    buildingSuperficy: "100",
+    activitySector: "",
+    electricityConsumption: "3500",
+    heatingType: "Electric (including heat pumps)",
+    pvEnabled: true,
+    heatPumpsEnabled: true,
+    evChargersEnabled: true,
+    energyOptimizationEnabled: true,
+    selectedScenario: "Core",
+    additionalPvEnabled: true,
+    additionalHeatPumpsEnabled: true,
+    additionalEvChargersEnabled: true,
+  })
+
+  const [showTooltip, setShowTooltip] = useState(false)
 
   const sidebarItems = [
     { icon: TrendingUp, label: "Progress", active: false },
@@ -141,16 +163,15 @@ export default function EnergySimulator() {
             <h1 className="text-xl lg:text-2xl font-semibold text-gray-900">Energy simulator</h1>
           </div>
           <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-gray-500" />
-            <Select value={selectedReportYear} onValueChange={setSelectedReportYear}>
+            <Select value="Learn" onValueChange={() => {}}>
               <SelectTrigger className="w-20 lg:w-24 border-none shadow-none">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="2024">2024</SelectItem>
-                <SelectItem value="2023">2023</SelectItem>
+                <SelectItem value="Learn">Learn</SelectItem>
               </SelectContent>
             </Select>
+            <ChevronDown className="h-4 w-4 text-gray-500" />
           </div>
         </div>
 
@@ -164,14 +185,26 @@ export default function EnergySimulator() {
                   <Label htmlFor="buildings" className="text-sm font-medium text-gray-700">
                     Number of buildings <span className="text-red-500">*</span>
                   </Label>
-                  <Input id="buildings" placeholder="Type the number of buildings" className="w-full" />
+                  <Input
+                    id="buildings"
+                    value={formData.numberOfBuildings}
+                    onChange={(e) => setFormData({ ...formData, numberOfBuildings: e.target.value })}
+                    placeholder="Type the number of buildings"
+                    className="w-full"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="superficy" className="text-sm font-medium text-gray-700">
                     Average Superficy per building <span className="text-red-500">*</span>
                   </Label>
                   <div className="relative">
-                    <Input id="superficy" placeholder="Type the superficy per building" className="w-full pr-12" />
+                    <Input
+                      id="superficy"
+                      value={formData.averageSuperficy}
+                      onChange={(e) => setFormData({ ...formData, averageSuperficy: e.target.value })}
+                      placeholder="Type the superficy per building"
+                      className="w-full pr-12"
+                    />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 font-bold">
                       m2
                     </span>
@@ -181,13 +214,17 @@ export default function EnergySimulator() {
                   <Label htmlFor="your-building" className="text-sm font-medium text-gray-700">
                     Your building <span className="text-red-500">*</span>
                   </Label>
-                  <Select>
+                  <Select
+                    value={formData.yourBuilding}
+                    onValueChange={(value) => setFormData({ ...formData, yourBuilding: value })}
+                  >
                     <SelectTrigger className="w-full min-w-[200px]">
                       <SelectValue placeholder="Select one" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="building1">Building 1</SelectItem>
-                      <SelectItem value="building2">Building 2</SelectItem>
+                      <SelectItem value="Offices">Offices</SelectItem>
+                      <SelectItem value="Retail">Retail</SelectItem>
+                      <SelectItem value="Industrial">Industrial</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -197,6 +234,16 @@ export default function EnergySimulator() {
             {/* Your Building Section */}
             <div className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6">
               <h2 className="text-lg font-medium text-gray-900 mb-4 lg:mb-6">Your building</h2>
+
+              <div className="flex items-center gap-2 mb-6">
+                <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 rounded-md text-sm font-medium">
+                  Building A
+                </div>
+                <Button variant="outline" size="sm" className="h-7 w-7 p-0 bg-transparent">
+                  +
+                </Button>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
                 <div className="space-y-2">
                   <Label htmlFor="building-superficy" className="text-sm font-medium text-gray-700">
@@ -205,6 +252,8 @@ export default function EnergySimulator() {
                   <div className="relative">
                     <Input
                       id="building-superficy"
+                      value={formData.buildingSuperficy}
+                      onChange={(e) => setFormData({ ...formData, buildingSuperficy: e.target.value })}
                       placeholder="Type the number of buildings"
                       className="w-full pr-12"
                     />
@@ -215,7 +264,10 @@ export default function EnergySimulator() {
                   <Label htmlFor="activity-sector" className="text-sm font-medium text-gray-700">
                     Activity sector <span className="text-red-500">*</span>
                   </Label>
-                  <Select>
+                  <Select
+                    value={formData.activitySector}
+                    onValueChange={(value) => setFormData({ ...formData, activitySector: value })}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select one" />
                     </SelectTrigger>
@@ -231,7 +283,13 @@ export default function EnergySimulator() {
                     Electricity annual consumption <span className="text-red-500">*</span>
                   </Label>
                   <div className="relative">
-                    <Input id="electricity" placeholder="Type the number of buildings" className="w-full pr-12" />
+                    <Input
+                      id="electricity"
+                      value={formData.electricityConsumption}
+                      onChange={(e) => setFormData({ ...formData, electricityConsumption: e.target.value })}
+                      placeholder="Type the number of buildings"
+                      className="w-full pr-12"
+                    />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 font-bold">
                       kWh
                     </span>
@@ -241,78 +299,299 @@ export default function EnergySimulator() {
                   <Label htmlFor="heating-type" className="text-sm font-medium text-gray-700">
                     Heating type <span className="text-red-500">*</span>
                   </Label>
-                  <Select>
+                  <Select
+                    value={formData.heatingType}
+                    onValueChange={(value) => setFormData({ ...formData, heatingType: value })}
+                  >
                     <SelectTrigger className="w-full min-w-[200px]">
                       <SelectValue placeholder="Select one" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="gas">Gas</SelectItem>
-                      <SelectItem value="electric">Electric</SelectItem>
-                      <SelectItem value="oil">Oil</SelectItem>
+                      <SelectItem value="Electric (including heat pumps)">Electric (including heat pumps)</SelectItem>
+                      <SelectItem value="Gas">Gas</SelectItem>
+                      <SelectItem value="Oil">Oil</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <span className="text-sm font-medium text-gray-700">Heat Pumps</span>
-                  <Switch />
+                {/* PV Section */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <span className="text-sm font-medium text-gray-700">PV</span>
+                    <Switch
+                      checked={formData.pvEnabled}
+                      onCheckedChange={(checked) => setFormData({ ...formData, pvEnabled: checked })}
+                    />
+                  </div>
+                  {formData.pvEnabled && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="roof-covered" className="text-sm font-medium text-gray-700">
+                          % Roof covered <span className="text-red-500">*</span>
+                        </Label>
+                        <div className="relative">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-4 w-4 p-0"
+                            onMouseEnter={() => setShowTooltip(true)}
+                            onMouseLeave={() => setShowTooltip(false)}
+                          >
+                            <Info className="h-3 w-3 text-gray-400" />
+                          </Button>
+                          {showTooltip && (
+                            <div className="absolute left-6 top-0 z-10 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg">
+                              If you don't know your solar capacity, would you know how many % of your roof is covered
+                              with it? Typically, 1 panel of 400 Wp is 1.8 square meter
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="relative">
+                        <Input defaultValue="70" className="w-full pr-8" />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">%</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <span className="text-sm font-medium text-gray-700">EV Chargers</span>
-                  <Switch />
+
+                {/* Heat Pumps Section */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <span className="text-sm font-medium text-gray-700">Heat Pumps</span>
+                    <Switch
+                      checked={formData.heatPumpsEnabled}
+                      onCheckedChange={(checked) => setFormData({ ...formData, heatPumpsEnabled: checked })}
+                    />
+                  </div>
+                  {formData.heatPumpsEnabled && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="heat-covered" className="text-sm font-medium text-gray-700">
+                          % Heat covered <span className="text-red-500">*</span>
+                        </Label>
+                        <Info className="h-3 w-3 text-gray-400" />
+                      </div>
+                      <div className="relative">
+                        <Input defaultValue="70" className="w-full pr-8" />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">%</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <span className="text-sm font-medium text-gray-700">PV</span>
-                  <Switch />
+
+                {/* EV Chargers Section */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <span className="text-sm font-medium text-gray-700">EV Chargers</span>
+                    <Switch
+                      checked={formData.evChargersEnabled}
+                      onCheckedChange={(checked) => setFormData({ ...formData, evChargersEnabled: checked })}
+                    />
+                  </div>
+                  {formData.evChargersEnabled && (
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor="units" className="text-sm font-medium text-gray-700">
+                            Units <span className="text-red-500">*</span>
+                          </Label>
+                          <Info className="h-3 w-3 text-gray-400" />
+                        </div>
+                        <Input defaultValue="10" className="w-full" />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor="kw" className="text-sm font-medium text-gray-700">
+                            kW <span className="text-red-500">*</span>
+                          </Label>
+                          <Info className="h-3 w-3 text-gray-400" />
+                        </div>
+                        <Input defaultValue="30" className="w-full" />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4 lg:mb-6">Scenarios</h2>
-              <RadioGroup
-                value={scenario}
-                onValueChange={setScenario}
-                className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6"
-              >
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <Label htmlFor="light" className="text-sm font-medium text-gray-700 cursor-pointer">
-                    Light
-                  </Label>
-                  <RadioGroupItem value="light" id="light" />
+            {formData.energyOptimizationEnabled && (
+              <div className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-lg font-medium text-gray-900">Energy Optimization & Flexibility</h2>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-green-600 font-medium">Activate</span>
+                    <Switch
+                      checked={formData.energyOptimizationEnabled}
+                      onCheckedChange={(checked) => setFormData({ ...formData, energyOptimizationEnabled: checked })}
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <Label htmlFor="core" className="text-sm font-medium text-gray-700 cursor-pointer">
-                    Core
-                  </Label>
-                  <RadioGroupItem value="core" id="core" />
-                </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <Label htmlFor="advanced" className="text-sm font-medium text-gray-700 cursor-pointer">
-                    Advanced
-                  </Label>
-                  <RadioGroupItem value="advanced" id="advanced" />
-                </div>
-              </RadioGroup>
-            </div>
 
-            {/* Additional Assets Section */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-center p-6 border-2 border-gray-200 rounded-lg">
+                      <div className="text-center">
+                        <LightIcon className="h-6 w-6 text-gray-400 mx-auto mb-2" />
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            name="scenario"
+                            value="Light"
+                            checked={formData.selectedScenario === "Light"}
+                            onChange={(e) => setFormData({ ...formData, selectedScenario: e.target.value })}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-sm font-medium text-gray-700">Light</span>
+                          <Info className="h-3 w-3 text-gray-400" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div
+                      className={`flex items-center justify-center p-6 border-2 rounded-lg ${
+                        formData.selectedScenario === "Core" ? "border-green-500 bg-green-50" : "border-gray-200"
+                      }`}
+                    >
+                      <div className="text-center">
+                        <Circle
+                          className={`h-6 w-6 mx-auto mb-2 ${
+                            formData.selectedScenario === "Core" ? "text-green-600 fill-green-600" : "text-gray-400"
+                          }`}
+                        />
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            name="scenario"
+                            value="Core"
+                            checked={formData.selectedScenario === "Core"}
+                            onChange={(e) => setFormData({ ...formData, selectedScenario: e.target.value })}
+                            className="w-4 h-4"
+                          />
+                          <span
+                            className={`text-sm font-medium ${
+                              formData.selectedScenario === "Core" ? "text-green-700" : "text-gray-700"
+                            }`}
+                          >
+                            Core
+                          </span>
+                          <Info className="h-3 w-3 text-gray-400" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-center p-6 border-2 border-gray-200 rounded-lg">
+                      <div className="text-center">
+                        <Star className="h-6 w-6 text-gray-400 mx-auto mb-2" />
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            name="scenario"
+                            value="Advanced"
+                            checked={formData.selectedScenario === "Advanced"}
+                            onChange={(e) => setFormData({ ...formData, selectedScenario: e.target.value })}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-sm font-medium text-gray-700">Advanced</span>
+                          <Info className="h-3 w-3 text-gray-400" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6">
               <h2 className="text-lg font-medium text-gray-900 mb-4 lg:mb-6">Additional assets</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <span className="text-sm font-medium text-gray-700">Heat Pumps</span>
-                  <Switch />
+                {/* Additional PV */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <span className="text-sm font-medium text-gray-700">PV</span>
+                    <Switch
+                      checked={formData.additionalPvEnabled}
+                      onCheckedChange={(checked) => setFormData({ ...formData, additionalPvEnabled: checked })}
+                    />
+                  </div>
+                  {formData.additionalPvEnabled && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="roof-conversion" className="text-sm font-medium text-gray-700">
+                          Roof conversion <span className="text-red-500">*</span>
+                        </Label>
+                        <Info className="h-3 w-3 text-gray-400" />
+                      </div>
+                      <div className="relative">
+                        <Input defaultValue="70" className="w-full pr-8" />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">%</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <span className="text-sm font-medium text-gray-700">EV Chargers</span>
-                  <Switch />
+
+                {/* Additional Heat Pumps */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <span className="text-sm font-medium text-gray-700">Heat Pumps</span>
+                    <Switch
+                      checked={formData.additionalHeatPumpsEnabled}
+                      onCheckedChange={(checked) => setFormData({ ...formData, additionalHeatPumpsEnabled: checked })}
+                    />
+                  </div>
+                  {formData.additionalHeatPumpsEnabled && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="building-conversion" className="text-sm font-medium text-gray-700">
+                          Building conversion <span className="text-red-500">*</span>
+                        </Label>
+                        <Info className="h-3 w-3 text-gray-400" />
+                      </div>
+                      <div className="relative">
+                        <Input defaultValue="70" className="w-full pr-8" />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">%</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <span className="text-sm font-medium text-gray-700">PV</span>
-                  <Switch />
+
+                {/* Additional EV Chargers */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <span className="text-sm font-medium text-gray-700">EV Chargers</span>
+                    <Switch
+                      checked={formData.additionalEvChargersEnabled}
+                      onCheckedChange={(checked) => setFormData({ ...formData, additionalEvChargersEnabled: checked })}
+                    />
+                  </div>
+                  {formData.additionalEvChargersEnabled && (
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor="additional-units" className="text-sm font-medium text-gray-700">
+                            Units <span className="text-red-500">*</span>
+                          </Label>
+                          <Info className="h-3 w-3 text-gray-400" />
+                        </div>
+                        <Input defaultValue="10" className="w-full" />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor="additional-kwh" className="text-sm font-medium text-gray-700">
+                            kWh <span className="text-red-500">*</span>
+                          </Label>
+                          <Info className="h-3 w-3 text-gray-400" />
+                        </div>
+                        <Input defaultValue="30" className="w-full" />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -325,9 +604,15 @@ export default function EnergySimulator() {
                   <h2 className="text-lg font-medium text-gray-900">Profitability</h2>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 lg:gap-3">
+                  <Button variant="outline" size="sm" className="bg-transparent">
+                    €
+                  </Button>
+                  <Button variant="outline" size="sm" className="bg-transparent">
+                    CO2
+                  </Button>
                   <Button variant="outline" size="sm" className="flex items-center gap-2 bg-transparent">
                     <Calendar className="h-4 w-4" />
-                    <span className="hidden sm:inline">Last year</span>
+                    <span className="hidden sm:inline">Per year</span>
                   </Button>
                   <Button variant="outline" size="sm" className="flex items-center gap-2 bg-transparent">
                     <Filter className="h-4 w-4" />
