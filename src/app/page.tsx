@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -25,7 +26,6 @@ import {
   Menu,
   X,
 } from "lucide-react"
-import Image from "next/image"
 
 export default function EnergySimulator() {
   const [selectedCompany, setSelectedCompany] = useState("ACME Inc.")
@@ -60,7 +60,7 @@ export default function EnergySimulator() {
         className={`
         ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-50
-        w-64 bg-white border-r border-gray-200 flex flex-col
+        w-64 bg-gray-100 border-r border-gray-200 flex flex-col
         transition-transform duration-300 ease-in-out
       `}
       >
@@ -70,9 +70,10 @@ export default function EnergySimulator() {
           </Button>
         </div>
 
-        {/* Logo */}
         <div className="p-6 border-b border-gray-200">
-          <h1 className="text-xl font-bold text-gray-900"><Image src="/logo.svg" alt="Logo" width={100} height={40} /></h1>
+          <h1 className="text-xl font-bold text-gray-900">
+            <Image src="/logo.svg" alt="Logo" width={100} height={40} />
+          </h1>
         </div>
 
         {/* Company and Year Selectors */}
@@ -115,9 +116,7 @@ export default function EnergySimulator() {
                 <li key={index}>
                   <button
                     className={`w-full flex items-center gap-3 px-3 py-2 text-left rounded-md ${
-                      item.active
-                        ? "bg-green-100 text-green-800 border border-green-200"
-                        : "text-gray-700 hover:bg-gray-100"
+                      item.active ? "bg-gray-200 text-gray-900" : "text-gray-700 hover:bg-gray-200"
                     }`}
                   >
                     <IconComponent className="h-4 w-4" />
@@ -155,9 +154,8 @@ export default function EnergySimulator() {
           </div>
         </div>
 
-        {/* Form Content */}
-        <div className="flex-1 p-4 lg:p-8 overflow-auto">
-          <div className="max-w-4xl space-y-6 lg:space-y-8">
+        <div className="flex-1 p-4 lg:p-8 overflow-auto w-full">
+          <div className="w-full space-y-6 lg:space-y-8">
             {/* Global Section */}
             <div className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6">
               <h2 className="text-lg font-medium text-gray-900 mb-4 lg:mb-6">Global</h2>
@@ -174,7 +172,9 @@ export default function EnergySimulator() {
                   </Label>
                   <div className="relative">
                     <Input id="superficy" placeholder="Type the superficy per building" className="w-full pr-12" />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">m2</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 font-bold">
+                      m2
+                    </span>
                   </div>
                 </div>
                 <div className="space-y-2 md:col-span-2 lg:col-span-1">
@@ -252,24 +252,22 @@ export default function EnergySimulator() {
                 </div>
               </div>
 
-              {/* Toggles */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
                   <span className="text-sm font-medium text-gray-700">Heat Pumps</span>
                   <Switch />
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
                   <span className="text-sm font-medium text-gray-700">EV Chargers</span>
                   <Switch />
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
                   <span className="text-sm font-medium text-gray-700">PV</span>
                   <Switch />
                 </div>
               </div>
             </div>
 
-            {/* Scenarios Section */}
             <div className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6">
               <h2 className="text-lg font-medium text-gray-900 mb-4 lg:mb-6">Scenarios</h2>
               <RadioGroup
@@ -277,23 +275,23 @@ export default function EnergySimulator() {
                 onValueChange={setScenario}
                 className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6"
               >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="light" id="light" />
-                  <Label htmlFor="light" className="text-sm font-medium text-gray-700">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <Label htmlFor="light" className="text-sm font-medium text-gray-700 cursor-pointer">
                     Light
                   </Label>
+                  <RadioGroupItem value="light" id="light" />
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="core" id="core" />
-                  <Label htmlFor="core" className="text-sm font-medium text-gray-700">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <Label htmlFor="core" className="text-sm font-medium text-gray-700 cursor-pointer">
                     Core
                   </Label>
+                  <RadioGroupItem value="core" id="core" />
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="advanced" id="advanced" />
-                  <Label htmlFor="advanced" className="text-sm font-medium text-gray-700">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <Label htmlFor="advanced" className="text-sm font-medium text-gray-700 cursor-pointer">
                     Advanced
                   </Label>
+                  <RadioGroupItem value="advanced" id="advanced" />
                 </div>
               </RadioGroup>
             </div>
@@ -302,15 +300,15 @@ export default function EnergySimulator() {
             <div className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6">
               <h2 className="text-lg font-medium text-gray-900 mb-4 lg:mb-6">Additional assets</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
                   <span className="text-sm font-medium text-gray-700">Heat Pumps</span>
                   <Switch />
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
                   <span className="text-sm font-medium text-gray-700">EV Chargers</span>
                   <Switch />
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
                   <span className="text-sm font-medium text-gray-700">PV</span>
                   <Switch />
                 </div>
