@@ -26,7 +26,6 @@ import {
   X,
   Info,
   WeightIcon as LightIcon,
-  Circle,
   Star,
 } from "lucide-react"
 
@@ -171,7 +170,7 @@ export default function EnergySimulator() {
                 <SelectItem value="Learn">Learn</SelectItem>
               </SelectContent>
             </Select>
-            <ChevronDown className="h-4 w-4 text-gray-500" />
+     
           </div>
         </div>
 
@@ -236,7 +235,7 @@ export default function EnergySimulator() {
               <h2 className="text-lg font-medium text-gray-900 mb-4 lg:mb-6">Your building</h2>
 
               <div className="flex items-center gap-2 mb-6">
-                <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-800 rounded-md text-sm font-medium">
+                <div className="flex items-center gap-2 px-3 py-1 text-gray-800 text-sm font-medium border-b-2 border-green-500">
                   Building A
                 </div>
                 <Button variant="outline" size="sm" className="h-7 w-7 p-0 bg-transparent">
@@ -432,18 +431,15 @@ export default function EnergySimulator() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <div className="flex items-center justify-center p-6 border-2 border-gray-200 rounded-lg">
+                    <div className="flex items-center justify-center p-6 border-2 border-gray-200 rounded-lg bg-white">
                       <div className="text-center">
-                        <LightIcon className="h-6 w-6 text-gray-400 mx-auto mb-2" />
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="radio"
-                            name="scenario"
-                            value="Light"
-                            checked={formData.selectedScenario === "Light"}
-                            onChange={(e) => setFormData({ ...formData, selectedScenario: e.target.value })}
-                            className="w-4 h-4"
-                          />
+                        <LightIcon className="h-6 w-6 text-gray-400 mx-auto mb-3" />
+                        <div className="flex items-center justify-center gap-2">
+                          <div className="w-4 h-4 border-2 border-gray-300 rounded-full flex items-center justify-center">
+                            {formData.selectedScenario === "Light" && (
+                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            )}
+                          </div>
                           <span className="text-sm font-medium text-gray-700">Light</span>
                           <Info className="h-3 w-3 text-gray-400" />
                         </div>
@@ -454,24 +450,31 @@ export default function EnergySimulator() {
                   <div className="space-y-2">
                     <div
                       className={`flex items-center justify-center p-6 border-2 rounded-lg ${
-                        formData.selectedScenario === "Core" ? "border-green-500 bg-green-50" : "border-gray-200"
+                        formData.selectedScenario === "Core"
+                          ? "border-green-500 bg-green-50"
+                          : "border-gray-200 bg-white"
                       }`}
                     >
                       <div className="text-center">
-                        <Circle
-                          className={`h-6 w-6 mx-auto mb-2 ${
-                            formData.selectedScenario === "Core" ? "text-green-600 fill-green-600" : "text-gray-400"
+                        <div
+                          className={`w-6 h-6 mx-auto mb-3 rounded-full border-2 flex items-center justify-center ${
+                            formData.selectedScenario === "Core" ? "border-green-500 bg-green-500" : "border-gray-400"
                           }`}
-                        />
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="radio"
-                            name="scenario"
-                            value="Core"
-                            checked={formData.selectedScenario === "Core"}
-                            onChange={(e) => setFormData({ ...formData, selectedScenario: e.target.value })}
-                            className="w-4 h-4"
-                          />
+                        >
+                          {formData.selectedScenario === "Core" && (
+                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                          )}
+                        </div>
+                        <div className="flex items-center justify-center gap-2">
+                          <div
+                            className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${
+                              formData.selectedScenario === "Core" ? "border-green-500" : "border-gray-300"
+                            }`}
+                          >
+                            {formData.selectedScenario === "Core" && (
+                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            )}
+                          </div>
                           <span
                             className={`text-sm font-medium ${
                               formData.selectedScenario === "Core" ? "text-green-700" : "text-gray-700"
@@ -486,24 +489,45 @@ export default function EnergySimulator() {
                   </div>
 
                   <div className="space-y-2">
-                    <div className="flex items-center justify-center p-6 border-2 border-gray-200 rounded-lg">
+                    <div className="flex items-center justify-center p-6 border-2 border-gray-200 rounded-lg bg-white">
                       <div className="text-center">
-                        <Star className="h-6 w-6 text-gray-400 mx-auto mb-2" />
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="radio"
-                            name="scenario"
-                            value="Advanced"
-                            checked={formData.selectedScenario === "Advanced"}
-                            onChange={(e) => setFormData({ ...formData, selectedScenario: e.target.value })}
-                            className="w-4 h-4"
-                          />
+                        <Star className="h-6 w-6 text-gray-400 mx-auto mb-3" />
+                        <div className="flex items-center justify-center gap-2">
+                          <div className="w-4 h-4 border-2 border-gray-300 rounded-full flex items-center justify-center">
+                            {formData.selectedScenario === "Advanced" && (
+                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            )}
+                          </div>
                           <span className="text-sm font-medium text-gray-700">Advanced</span>
                           <Info className="h-3 w-3 text-gray-400" />
                         </div>
                       </div>
                     </div>
                   </div>
+                </div>
+
+                <div className="hidden">
+                  <input
+                    type="radio"
+                    name="scenario"
+                    value="Light"
+                    checked={formData.selectedScenario === "Light"}
+                    onChange={(e) => setFormData({ ...formData, selectedScenario: e.target.value })}
+                  />
+                  <input
+                    type="radio"
+                    name="scenario"
+                    value="Core"
+                    checked={formData.selectedScenario === "Core"}
+                    onChange={(e) => setFormData({ ...formData, selectedScenario: e.target.value })}
+                  />
+                  <input
+                    type="radio"
+                    name="scenario"
+                    value="Advanced"
+                    checked={formData.selectedScenario === "Advanced"}
+                    onChange={(e) => setFormData({ ...formData, selectedScenario: e.target.value })}
+                  />
                 </div>
               </div>
             )}
