@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts"
 import {
   ChevronDown,
   Calendar,
@@ -27,6 +28,7 @@ import {
   Info,
   WeightIcon as LightIcon,
   Star,
+  Book,
 } from "lucide-react"
 
 export default function EnergySimulator() {
@@ -54,7 +56,6 @@ export default function EnergySimulator() {
   })
 
   const [showTooltip, setShowTooltip] = useState(false)
-  const [showPvTooltip, setShowPvTooltip] = useState(false)
 
   const sidebarItems = [
     { icon: TrendingUp, label: "Progress", active: false },
@@ -68,8 +69,33 @@ export default function EnergySimulator() {
     { icon: User, label: "My account", active: false },
   ]
 
+  const chartData = [
+    { year: "2025", existingAssets: 15 },
+    { year: "2026", existingAssets: 18 },
+    { year: "2027", existingAssets: 22 },
+    { year: "2028", existingAssets: 28 },
+    { year: "2029", existingAssets: 35 },
+    { year: "2030", existingAssets: 42 },
+    { year: "2031", existingAssets: 48 },
+    { year: "2032", existingAssets: 55 },
+    { year: "2033", existingAssets: 62 },
+    { year: "2034", existingAssets: 68 },
+    { year: "2035", existingAssets: 75 },
+  ]
+
+  const treemapData = [
+    { name: "Additional assets: PV", value: 5254, color: "#064e3b" },
+    { name: "Additional assets: Heatpumps", value: 3276, color: "#065f46" },
+    { name: "Additional assets: EV Chargers", value: 1546, color: "#22c55e" },
+    { name: "Energy optimization: Demand side management", value: 669, color: "#16a34a" },
+    { name: "Energy optimization: EV Chargers", value: 389, color: "#4ade80" },
+    { name: "Energy optimization: Heatpumps", value: 189, color: "#86efac" },
+    { name: "Energy optimization: PV", value: 143, color: "#bbf7d0" },
+  ]
+
   return (
     <div className="flex h-screen bg-gray-50">
+      {/* ... existing sidebar code ... */}
       {isMobileMenuOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
@@ -165,21 +191,21 @@ export default function EnergySimulator() {
           <div className="flex items-center gap-2">
             <Select value="Learn" onValueChange={() => {}}>
               <SelectTrigger className="w-20 lg:w-24 border-none shadow-none">
-                <SelectValue />
+                <div className="flex items-center gap-2">
+                  <Book className="h-4 w-4 text-gray-500" />
+                  <SelectValue />
+                </div>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Learn">Learn</SelectItem>
               </SelectContent>
             </Select>
-            <div className="flex">
-              <ChevronDown className="h-4 w-4 text-gray-500 -mr-1" />
-              <ChevronDown className="h-4 w-4 text-gray-500" />
-            </div>
           </div>
         </div>
 
         <div className="flex-1 p-4 lg:p-8 overflow-auto w-full">
           <div className="w-full space-y-6 lg:space-y-8">
+            {/* ... existing Global and Your Building sections ... */}
             {/* Global Section */}
             <div className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6">
               <h2 className="text-lg font-medium text-gray-900 mb-4 lg:mb-6">Global</h2>
@@ -271,7 +297,7 @@ export default function EnergySimulator() {
                     value={formData.activitySector}
                     onValueChange={(value) => setFormData({ ...formData, activitySector: value })}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full min-w-[200px]">
                       <SelectValue placeholder="Select one" />
                     </SelectTrigger>
                     <SelectContent>
@@ -322,7 +348,21 @@ export default function EnergySimulator() {
                 {/* PV Section */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <span className="text-sm font-medium text-gray-700">PV</span>
+                    <div className="relative">
+                      <span
+                        className="text-sm font-medium text-gray-700 cursor-help"
+                        onMouseEnter={() => setShowTooltip(true)}
+                        onMouseLeave={() => setShowTooltip(false)}
+                      >
+                        PV
+                      </span>
+                      {showTooltip && (
+                        <div className="absolute left-0 top-8 z-50 w-80 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-lg">
+                          If you don't know your solar capacity, would you know how many % of your roof is covered with
+                          it? Typically, 1 panel of 400 Wp is 1.8 square meter
+                        </div>
+                      )}
+                    </div>
                     <Switch
                       checked={formData.pvEnabled}
                       onCheckedChange={(checked) => setFormData({ ...formData, pvEnabled: checked })}
@@ -335,21 +375,9 @@ export default function EnergySimulator() {
                           % Roof covered <span className="text-red-500">*</span>
                         </Label>
                         <div className="relative">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-4 w-4 p-0"
-                            onMouseEnter={() => setShowPvTooltip(true)}
-                            onMouseLeave={() => setShowPvTooltip(false)}
-                          >
+                          <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
                             <Info className="h-3 w-3 text-gray-400" />
                           </Button>
-                          {showPvTooltip && (
-                            <div className="absolute left-6 top-0 z-10 w-64 p-3 bg-gray-900 text-white text-xs rounded-lg shadow-lg">
-                              If you don't know your solar capacity, would you know how many % of your roof is covered
-                              with it? Typically, 1 panel of 400 Wp is 1.8 square meters.
-                            </div>
-                          )}
                         </div>
                       </div>
                       <div className="relative">
@@ -434,77 +462,107 @@ export default function EnergySimulator() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-center p-6 border-2 border-gray-200 rounded-lg bg-white">
-                      <div className="text-center">
-                        <LightIcon className="h-6 w-6 text-gray-400 mx-auto mb-3" />
-                        <div className="flex items-center justify-center gap-2">
-                          <div className="w-4 h-4 border-2 border-gray-300 rounded-full flex items-center justify-center">
-                            {formData.selectedScenario === "Light" && (
-                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                            )}
-                          </div>
-                          <span className="text-sm font-medium text-gray-700">Light</span>
-                          <Info className="h-3 w-3 text-gray-400" />
+                  {/* Light Option */}
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => setFormData({ ...formData, selectedScenario: "Light" })}
+                  >
+                    <div
+                      className={`flex flex-col items-center justify-center p-6 border-2 rounded-lg transition-all ${
+                        formData.selectedScenario === "Light"
+                          ? "border-green-500 bg-green-50"
+                          : "border-gray-200 bg-white hover:border-gray-300"
+                      }`}
+                    >
+                      <LightIcon className="h-6 w-6 text-gray-400 mb-3" />
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${
+                            formData.selectedScenario === "Light" ? "border-green-500" : "border-gray-300"
+                          }`}
+                        >
+                          {formData.selectedScenario === "Light" && (
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          )}
                         </div>
+                        <span className="text-sm font-medium text-gray-700">Light</span>
+                        <Info className="h-3 w-3 text-gray-400" />
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
+                  {/* Core Option */}
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => setFormData({ ...formData, selectedScenario: "Core" })}
+                  >
                     <div
-                      className={`flex items-center justify-center p-6 border-2 rounded-lg ${
+                      className={`flex flex-col items-center justify-center p-6 border-2 rounded-lg transition-all ${
                         formData.selectedScenario === "Core"
                           ? "border-green-500 bg-green-50"
-                          : "border-gray-200 bg-white"
+                          : "border-gray-200 bg-white hover:border-gray-300"
                       }`}
                     >
-                      <div className="text-center">
+                      <div
+                        className={`w-6 h-6 mb-3 rounded-full border-2 flex items-center justify-center ${
+                          formData.selectedScenario === "Core"
+                            ? "border-green-500 bg-green-500"
+                            : "border-gray-400 bg-gray-100"
+                        }`}
+                      >
+                        {formData.selectedScenario === "Core" && (
+                          <div className="w-3 h-3 bg-white rounded-full flex items-center justify-center">
+                            <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
                         <div
-                          className={`w-6 h-6 mx-auto mb-3 rounded-full border-2 flex items-center justify-center ${
-                            formData.selectedScenario === "Core" ? "border-green-500 bg-green-500" : "border-gray-400"
+                          className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${
+                            formData.selectedScenario === "Core" ? "border-green-500" : "border-gray-300"
                           }`}
                         >
                           {formData.selectedScenario === "Core" && (
-                            <div className="w-2 h-2 bg-white rounded-full"></div>
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                           )}
                         </div>
-                        <div className="flex items-center justify-center gap-2">
-                          <div
-                            className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${
-                              formData.selectedScenario === "Core" ? "border-green-500" : "border-gray-300"
-                            }`}
-                          >
-                            {formData.selectedScenario === "Core" && (
-                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                            )}
-                          </div>
-                          <span
-                            className={`text-sm font-medium ${
-                              formData.selectedScenario === "Core" ? "text-green-700" : "text-gray-700"
-                            }`}
-                          >
-                            Core
-                          </span>
-                          <Info className="h-3 w-3 text-gray-400" />
-                        </div>
+                        <span
+                          className={`text-sm font-medium ${
+                            formData.selectedScenario === "Core" ? "text-green-700" : "text-gray-700"
+                          }`}
+                        >
+                          Core
+                        </span>
+                        <Info className="h-3 w-3 text-gray-400" />
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-center p-6 border-2 border-gray-200 rounded-lg bg-white">
-                      <div className="text-center">
-                        <Star className="h-6 w-6 text-gray-400 mx-auto mb-3" />
-                        <div className="flex items-center justify-center gap-2">
-                          <div className="w-4 h-4 border-2 border-gray-300 rounded-full flex items-center justify-center">
-                            {formData.selectedScenario === "Advanced" && (
-                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                            )}
-                          </div>
-                          <span className="text-sm font-medium text-gray-700">Advanced</span>
-                          <Info className="h-3 w-3 text-gray-400" />
+                  {/* Advanced Option */}
+                  <div
+                    className="cursor-pointer"
+                    onClick={() => setFormData({ ...formData, selectedScenario: "Advanced" })}
+                  >
+                    <div
+                      className={`flex flex-col items-center justify-center p-6 border-2 rounded-lg transition-all ${
+                        formData.selectedScenario === "Advanced"
+                          ? "border-green-500 bg-green-50"
+                          : "border-gray-200 bg-white hover:border-gray-300"
+                      }`}
+                    >
+                      <Star className="h-6 w-6 text-gray-400 mb-3" />
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={`w-4 h-4 border-2 rounded-full flex items-center justify-center ${
+                            formData.selectedScenario === "Advanced" ? "border-green-500" : "border-gray-300"
+                          }`}
+                        >
+                          {formData.selectedScenario === "Advanced" && (
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          )}
                         </div>
+                        <span className="text-sm font-medium text-gray-700">Advanced</span>
+                        <Info className="h-3 w-3 text-gray-400" />
                       </div>
                     </div>
                   </div>
@@ -624,7 +682,6 @@ export default function EnergySimulator() {
               </div>
             </div>
 
-            {/* Profitability Section */}
             <div className="bg-white rounded-lg border border-gray-200 p-4 lg:p-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div className="flex items-center gap-2">
@@ -653,9 +710,137 @@ export default function EnergySimulator() {
                 </div>
               </div>
 
-              {/* Chart Area */}
-              <div className="h-48 lg:h-64 flex items-center justify-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
-                <span className="text-gray-500 text-sm">No data</span>
+              {/* Top Bar Chart */}
+              <div className="h-48 mb-8">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 40 }}>
+                    <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#6B7280" }} />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: "#6B7280" }}
+                      tickFormatter={(value) => `${value}k`}
+                      domain={[0, 80]}
+                    />
+                    <Bar dataKey="existingAssets" fill="#22C55E" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+                <div className="flex items-center justify-between mt-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-green-500 rounded-sm"></div>
+                    <span className="text-xs text-gray-500">Existing assets</span>
+                  </div>
+                  <span className="text-xs text-gray-500">All figures are in Euro (€)</span>
+                </div>
+              </div>
+
+              {/* Summary Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm text-gray-600 mb-1">Total decarbonisation</div>
+                  <div className="text-2xl font-bold text-gray-900">
+                    700 <span className="text-sm font-normal text-gray-500">tCO2e</span>
+                  </div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm text-gray-600 mb-1">Total revenue estimated</div>
+                  <div className="text-2xl font-bold text-gray-900">
+                    400k <span className="text-sm font-normal text-gray-500">€</span>
+                  </div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <div className="text-sm text-gray-600 mb-1">Total investment estimated</div>
+                  <div className="text-2xl font-bold text-gray-900">
+                    50k <span className="text-sm font-normal text-gray-500">€</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Emissions by Category Section */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-medium text-gray-900">Emissions by category</h3>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" className="bg-transparent">
+                      This year
+                    </Button>
+                    <Button variant="outline" size="sm" className="flex items-center gap-2 bg-transparent">
+                      <Filter className="h-4 w-4" />
+                      Filters
+                    </Button>
+                    <Button variant="outline" size="sm" className="flex items-center gap-2 bg-transparent">
+                      <Download className="h-4 w-4" />
+                      Download
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Treemap Visualization */}
+                <div className="grid grid-cols-12 grid-rows-6 gap-1 h-80 mb-4">
+                  {/* Large rectangle - Additional assets: PV */}
+                  <div
+                    className="col-span-5 row-span-6 rounded-lg flex items-center justify-center text-white font-bold text-xl"
+                    style={{ backgroundColor: treemapData[0].color }}
+                  >
+                    {treemapData[0].value}
+                  </div>
+
+                  {/* Medium rectangle - Additional assets: Heatpumps */}
+                  <div
+                    className="col-span-4 row-span-4 rounded-lg flex items-center justify-center text-white font-bold text-lg"
+                    style={{ backgroundColor: treemapData[1].color }}
+                  >
+                    {treemapData[1].value}
+                  </div>
+
+                  {/* Small rectangle - Energy optimization: Demand side management */}
+                  <div
+                    className="col-span-4 row-span-2 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+                    style={{ backgroundColor: treemapData[3].color }}
+                  >
+                    {treemapData[3].value}
+                  </div>
+
+                  {/* Medium-small rectangle - Additional assets: EV Chargers */}
+                  <div
+                    className="col-span-3 row-span-6 rounded-lg flex items-center justify-center text-white font-bold text-lg"
+                    style={{ backgroundColor: treemapData[2].color }}
+                  >
+                    {treemapData[2].value}
+                  </div>
+
+                  {/* Small rectangles on the right */}
+                  <div
+                    className="col-span-2 row-span-2 rounded-lg flex items-center justify-center text-white font-bold text-xs"
+                    style={{ backgroundColor: treemapData[5].color }}
+                  >
+                    {treemapData[5].value}
+                  </div>
+
+                  <div
+                    className="col-span-2 row-span-2 rounded-lg flex items-center justify-center text-white font-bold text-xs"
+                    style={{ backgroundColor: treemapData[6].color }}
+                  >
+                    {treemapData[6].value}
+                  </div>
+
+                  <div
+                    className="col-span-2 row-span-2 rounded-lg flex items-center justify-center text-white font-bold text-xs"
+                    style={{ backgroundColor: treemapData[4].color }}
+                  >
+                    {treemapData[4].value}
+                  </div>
+                </div>
+
+                {/* Legend */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-600">
+                  {treemapData.map((item, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: item.color }}></div>
+                      <span>{item.name}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
