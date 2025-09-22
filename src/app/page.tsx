@@ -182,7 +182,7 @@ export default function EnergySimulator() {
                     Your building <span className="text-red-500">*</span>
                   </Label>
                   <Select>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full min-w-[200px]">
                       <SelectValue placeholder="Select one" />
                     </SelectTrigger>
                     <SelectContent>
@@ -232,7 +232,9 @@ export default function EnergySimulator() {
                   </Label>
                   <div className="relative">
                     <Input id="electricity" placeholder="Type the number of buildings" className="w-full pr-12" />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">kWh</span>
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 font-bold">
+                      kWh
+                    </span>
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -240,7 +242,7 @@ export default function EnergySimulator() {
                     Heating type <span className="text-red-500">*</span>
                   </Label>
                   <Select>
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full min-w-[200px]">
                       <SelectValue placeholder="Select one" />
                     </SelectTrigger>
                     <SelectContent>
