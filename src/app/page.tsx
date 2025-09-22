@@ -36,6 +36,8 @@ export default function EnergySimulator() {
   const [selectedYear, setSelectedYear] = useState("2025")
   const [selectedReportYear, setSelectedReportYear] = useState("2024")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [buildings, setBuildings] = useState(["Building A"])
+  const [activeBuilding, setActiveBuilding] = useState("Building A")
 
   const [formData, setFormData] = useState({
     numberOfBuildings: "1",
@@ -92,6 +94,50 @@ export default function EnergySimulator() {
     { name: "Energy optimization: Heatpumps", value: 189, color: "#86efac" },
     { name: "Energy optimization: PV", value: 143, color: "#bbf7d0" },
   ]
+
+  const handleAddBuilding = () => {
+    const newBuildingName = `Building ${String.fromCharCode(65 + buildings.length)}`
+    setBuildings([...buildings, newBuildingName])
+    setActiveBuilding(newBuildingName)
+  }
+
+  const handleProfitabilityAction = (action: string) => {
+    console.log(`[v0] Profitability action: ${action}`)
+    // Add specific functionality based on action
+    switch (action) {
+      case "currency":
+        console.log("[v0] Switching currency view")
+        break
+      case "co2":
+        console.log("[v0] Switching to CO2 view")
+        break
+      case "per-year":
+        console.log("[v0] Showing per year breakdown")
+        break
+      case "filters":
+        console.log("[v0] Opening filters modal")
+        break
+      case "download":
+        console.log("[v0] Downloading profitability report")
+        break
+    }
+  }
+
+  const handleEmissionsAction = (action: string) => {
+    console.log(`[v0] Emissions action: ${action}`)
+    // Add specific functionality based on action
+    switch (action) {
+      case "this-year":
+        console.log("[v0] Showing this year emissions")
+        break
+      case "filters":
+        console.log("[v0] Opening emissions filters")
+        break
+      case "download":
+        console.log("[v0] Downloading emissions report")
+        break
+    }
+  }
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -265,10 +311,25 @@ export default function EnergySimulator() {
               <h2 className="text-lg font-medium text-gray-900 mb-4 lg:mb-6">Your building</h2>
 
               <div className="flex items-center gap-2 mb-6">
-                <div className="flex items-center gap-2 px-3 py-1 text-gray-800 text-sm font-medium border-b-2 border-green-500">
-                  Building A
-                </div>
-                <Button variant="outline" size="sm" className="h-7 w-7 p-0 bg-transparent">
+                {buildings.map((building) => (
+                  <div
+                    key={building}
+                    className={`flex items-center gap-2 px-3 py-1 text-sm font-medium cursor-pointer ${
+                      activeBuilding === building
+                        ? "text-gray-800 border-b-2 border-green-500"
+                        : "text-gray-600 hover:text-gray-800"
+                    }`}
+                    onClick={() => setActiveBuilding(building)}
+                  >
+                    {building}
+                  </div>
+                ))}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-7 w-7 p-0 bg-transparent hover:bg-green-50 hover:border-green-300"
+                  onClick={handleAddBuilding}
+                >
                   +
                 </Button>
               </div>
@@ -689,21 +750,46 @@ export default function EnergySimulator() {
                   <h2 className="text-lg font-medium text-gray-900">Profitability</h2>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 lg:gap-3">
-                  <Button variant="outline" size="sm" className="bg-transparent">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="bg-transparent hover:bg-green-50"
+                    onClick={() => handleProfitabilityAction("currency")}
+                  >
                     €
                   </Button>
-                  <Button variant="outline" size="sm" className="bg-transparent">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="bg-transparent hover:bg-green-50"
+                    onClick={() => handleProfitabilityAction("co2")}
+                  >
                     CO2
                   </Button>
-                  <Button variant="outline" size="sm" className="flex items-center gap-2 bg-transparent">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2 bg-transparent hover:bg-green-50"
+                    onClick={() => handleProfitabilityAction("per-year")}
+                  >
                     <Calendar className="h-4 w-4" />
                     <span className="hidden sm:inline">Per year</span>
                   </Button>
-                  <Button variant="outline" size="sm" className="flex items-center gap-2 bg-transparent">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2 bg-transparent hover:bg-green-50"
+                    onClick={() => handleProfitabilityAction("filters")}
+                  >
                     <Filter className="h-4 w-4" />
                     <span className="hidden sm:inline">Filters</span>
                   </Button>
-                  <Button variant="outline" size="sm" className="flex items-center gap-2 bg-transparent">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2 bg-transparent hover:bg-green-50"
+                    onClick={() => handleProfitabilityAction("download")}
+                  >
                     <Download className="h-4 w-4" />
                     <span className="hidden sm:inline">Download</span>
                   </Button>
@@ -768,14 +854,29 @@ export default function EnergySimulator() {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-medium text-gray-900">Emissions by category</h3>
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" className="bg-transparent">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="bg-transparent hover:bg-green-50"
+                      onClick={() => handleEmissionsAction("this-year")}
+                    >
                       This year
                     </Button>
-                    <Button variant="outline" size="sm" className="flex items-center gap-2 bg-transparent">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center gap-2 bg-transparent hover:bg-green-50"
+                      onClick={() => handleEmissionsAction("filters")}
+                    >
                       <Filter className="h-4 w-4" />
                       Filters
                     </Button>
-                    <Button variant="outline" size="sm" className="flex items-center gap-2 bg-transparent">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center gap-2 bg-transparent hover:bg-green-50"
+                      onClick={() => handleEmissionsAction("download")}
+                    >
                       <Download className="h-4 w-4" />
                       Download
                     </Button>
